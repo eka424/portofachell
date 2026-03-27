@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Achill - Premium iOS Portfolio</title>
+    
+    <!-- Fonts: Inter for clean iOS look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons: FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            --bg-color: #0f0f13;
+            --glass-bg: rgba(25, 25, 30, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            --glass-highlight: rgba(255, 255, 255, 0.05);
+            --text-main: #f5f5f7;
+            --text-muted: #a1a1a6;
+            --accent: #0a84ff; /* iOS Blue */
+            --accent-purple: #bf5af2; /* iOS Purple */
+            --ease-ios: cubic-bezier(0.32, 0.72, 0, 1); /* iOS Spring easing */
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+        /* Animated Background Orbs */
+        .bg-orbs {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            background: #000;
+        }
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: float 20s infinite alternate var(--ease-ios);
+        }
+        .orb-1 { width: 400px; height: 400px; background: #2f1b54; top: -10%; left: -10%; animation-delay: 0s; }
+        .orb-2 { width: 500px; height: 500px; background: #0b2b5e; bottom: -20%; right: -10%; animation-delay: -5s; }
+        .orb-3 { width: 300px; height: 300px; background: #4a154b; top: 40%; left: 50%; transform: translate(-50%, -50%); animation-delay: -10s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, 50px) scale(1.1); }
+        }
+
+        /* Glassmorphism Utilities with iOS Physics */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            box-shadow: inset 0 1px 1px var(--glass-highlight), var(--glass-shadow);
+            transition: transform 0.4s var(--ease-ios), background 0.4s var(--ease-ios), border-color 0.4s var(--ease-ios), box-shadow 0.4s var(--ease-ios);
+        }
+        .glass-panel:hover {
+            background: rgba(45, 45, 50, 0.5);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 12px 40px 0 rgba(0, 0, 0, 0.4);
+            transform: translateY(-2px);
+        }
+        .glass-panel:active, .glass-button:active, .ios-tap:active {
+            transform: scale(0.97) !important;
+            transition: transform 0.1s ease-out;
+        }
+        
+        .glass-nav {
+            background: rgba(20, 20, 25, 0.65);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 100px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        .glass-button {
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.02));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 100px;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            transition: all 0.3s var(--ease-ios);
+        }
+        .glass-button:hover {
+            background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.05));
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Bento Grid */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+        }
+        .bento-item { grid-column: span 12; }
+        @media (min-width: 768px) {
+            .bento-col-3 { grid-column: span 3; }
+            .bento-col-4 { grid-column: span 4; }
+            .bento-col-6 { grid-column: span 6; }
+            .bento-col-8 { grid-column: span 8; }
+            .bento-col-12 { grid-column: span 12; }
+        }
+
+        /* Typography */
+        .text-gradient {
+            background: linear-gradient(135deg, #fff, #a1a1a6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .text-gradient-accent {
+            background: linear-gradient(135deg, #0a84ff, #bf5af2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* iOS Blur Reveal Animations (Scroll) */
+        .reveal {
+            opacity: 0;
+            filter: blur(10px);
+            transform: translateY(40px) scale(0.95);
+            transition: opacity 0.8s var(--ease-ios), transform 0.8s var(--ease-ios), filter 0.8s var(--ease-ios);
+            will-change: opacity, transform, filter;
+        }
+        .reveal.active {
+            opacity: 1;
+            filter: blur(0);
+            transform: translateY(0) scale(1);
+        }
+
+        /* Skill Ring */
+        .skill-ring {
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent) var(--p), transparent 0);
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+        }
+        .skill-ring::before {
+            content: ""; position: absolute; inset: 4px;
+            background: var(--bg-color); border-radius: 50%; z-index: 1;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .skill-ring span { position: relative; z-index: 2; font-size: 0.75rem; font-weight: bold; }
+
+        /* Typing cursor */
+        .cursor { display: inline-block; width: 3px; background-color: #fff; animation: blink 1s step-end infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* Smooth inputs */
+        input, textarea {
+            transition: all 0.3s var(--ease-ios);
+            backdrop-filter: blur(10px);
+        }
+        input:focus, textarea:focus {
+            background: rgba(255,255,255,0.1) !important;
+            border-color: rgba(255,255,255,0.4) !important;
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.05);
+            transform: scale(1.02);
+            outline: none;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-blue-500/30">
+
+    <!-- Background -->
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 w-[90%] md:w-auto">
+        <div class="glass-nav px-2 py-2 flex items-center justify-between md:justify-center gap-1 md:gap-2 relative">
+            <!-- Sliding Nav Pill Animasi -->
+            <div id="nav-pill" class="absolute h-10 bg-white/15 backdrop-blur-xl border border-white/20 rounded-full transition-all duration-500 shadow-[0_4px_12px_rgba(0,0,0,0.2)]" style="transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1); left: 0; width: 0; opacity: 0; z-index: 0;"></div>
+            
+            <a href="#home" class="nav-link px-4 py-2 rounded-full text-sm font-medium text-white transition-colors flex items-center gap-2 relative z-10 ios-tap" data-target="home">
+                <i class="fa-solid fa-house"></i> <span class="hidden md:inline">Home</span>
+            </a>
+            <a href="#about" class="nav-link px-4 py-2 rounded-full text-sm font-medium text-gray-400 hover:text-white transition-colors flex items-center gap-2 relative z-10 ios-tap" data-target="about">
+                <i class="fa-solid fa-user"></i> <span class="hidden md:inline">About</span>
+            </a>
+            <a href="#resume" class="nav-link px-4 py-2 rounded-full text-sm font-medium text-gray-400 hover:text-white transition-colors flex items-center gap-2 relative z-10 ios-tap" data-target="resume">
+                <i class="fa-solid fa-file-lines"></i> <span class="hidden md:inline">Resume</span>
+            </a>
+            <!-- Link Portofolio Mengarah ke file berbeda -->
+            <a href="portfolio.html" class="nav-link px-4 py-2 rounded-full text-sm font-medium text-gray-400 hover:text-white transition-colors flex items-center gap-2 relative z-10 ios-tap">
+                <i class="fa-solid fa-images"></i> <span class="hidden md:inline">Portfolio</span>
+            </a>
+            <a href="#services" class="nav-link px-4 py-2 rounded-full text-sm font-medium text-gray-400 hover:text-white transition-colors flex items-center gap-2 relative z-10 ios-tap" data-target="services">
+                <i class="fa-solid fa-layer-group"></i> <span class="hidden md:inline">Services</span>
+            </a>
+            <a href="#contact" class="nav-link px-4 py-2 rounded-full text-sm font-medium text-gray-400 hover:text-white transition-colors flex items-center gap-2 relative z-10 ios-tap" data-target="contact">
+                <i class="fa-solid fa-envelope"></i> <span class="hidden md:inline">Contact</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="relative z-10 container mx-auto px-4 pt-32 pb-20 max-w-6xl">
+
+        <!-- ==========================================
+             HERO SECTION
+             ========================================== -->
+        <section id="home" class="scroll-mt-32">
+            <div class="bento-grid mb-6 reveal">
+                <div class="bento-item bento-col-8 glass-panel p-8 md:p-12 flex flex-col justify-center relative overflow-hidden group">
+                    <div class="absolute -right-10 -bottom-10 opacity-10 group-hover:scale-110 transition-transform duration-700">
+                        <i class="fa-solid fa-camera-retro text-[20rem]"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <div class="inline-block px-4 py-1.5 rounded-full border border-gray-500 bg-white/5 text-xs text-white font-semibold mb-6 backdrop-blur-md shadow-lg shadow-black/20">
+                            <i class="fa-solid fa-circle text-green-400 text-[8px] mr-2 animate-pulse"></i> Available for Freelance / Open to Work
+                        </div>
+                        <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-2 text-gradient">
+                            Eka Nurfitriani
+                        </h1>
+                        <h2 class="text-xl md:text-3xl font-medium text-gray-400 mb-6 flex items-center gap-2">
+                            A.k.a <span class="text-gradient-accent font-bold">Achill</span>
+                        </h2>
+                        <div class="text-xl md:text-2xl text-white mb-8 font-medium h-8">
+                            I'm <span id="typed-text" class="text-blue-400 font-bold"></span><span class="cursor">|</span>
+                        </div>
+                        <div class="flex flex-wrap gap-4">
+                            <a href="portfolio.html" class="glass-button px-8 py-3.5 font-semibold text-white transition-colors flex items-center gap-3 ios-tap">
+                                Eksplorasi Karya <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+                            <a href="#contact" class="px-6 py-3.5 rounded-full font-semibold text-gray-300 hover:text-white hover:bg-white/5 transition-all flex items-center gap-2 ios-tap">
+                                Hubungi Saya
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bento-item bento-col-4 glass-panel p-2 relative flex items-center justify-center overflow-hidden h-[450px]">
+                    <!-- Ganti link gambar ini dengan foto profil asli Anda -->
+                    <img src="https://images.unsplash.com/photo-1600607686527-6fb886090705?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Achill Profile" class="w-full h-full object-cover rounded-[24px] opacity-80 filter contrast-125 saturate-50 group-hover:scale-105 transition-transform duration-[1.5s]">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent rounded-[24px]"></div>
+                    <div class="absolute bottom-6 left-6 flex gap-3 z-10">
+                        <a href="#" class="w-12 h-12 rounded-full bg-white/10 backdrop-blur-xl flex items-center justify-center border border-white/20 hover:bg-white/30 transition-all shadow-xl ios-tap text-lg"><i class="fa-brands fa-instagram text-white"></i></a>
+                        <a href="#" class="w-12 h-12 rounded-full bg-white/10 backdrop-blur-xl flex items-center justify-center border border-white/20 hover:bg-white/30 transition-all shadow-xl ios-tap text-lg"><i class="fa-brands fa-linkedin-in text-white"></i></a>
+                        <a href="#" class="w-12 h-12 rounded-full bg-white/10 backdrop-blur-xl flex items-center justify-center border border-white/20 hover:bg-white/30 transition-all shadow-xl ios-tap text-lg"><i class="fa-brands fa-youtube text-white"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             STATS SECTION
+             ========================================== -->
+        <section id="stats" class="mb-6">
+            <div class="bento-grid">
+                <div class="bento-item bento-col-3 glass-panel p-6 flex flex-col justify-center text-center group reveal">
+                    <i class="fa-solid fa-face-smile text-4xl text-blue-400 mb-3 group-hover:-translate-y-2 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"></i>
+                    <h3 class="text-4xl font-extrabold text-white mb-1 tracking-tight">199</h3>
+                    <p class="text-sm font-bold text-gray-200">Klien Puas</p>
+                    <p class="text-xs text-gray-400 mt-2">Kepercayaan dari berbagai sektor industri</p>
+                </div>
+                <div class="bento-item bento-col-3 glass-panel p-6 flex flex-col justify-center text-center group reveal" style="transition-delay: 100ms;">
+                    <i class="fa-solid fa-film text-4xl text-purple-400 mb-3 group-hover:-translate-y-2 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"></i>
+                    <h3 class="text-4xl font-extrabold text-white mb-1 tracking-tight">200</h3>
+                    <p class="text-sm font-bold text-gray-200">Proyek Selesai</p>
+                    <p class="text-xs text-gray-400 mt-2">Video, desain grafis, dan audio mixing</p>
+                </div>
+                <div class="bento-item bento-col-3 glass-panel p-6 flex flex-col justify-center text-center group reveal" style="transition-delay: 200ms;">
+                    <i class="fa-solid fa-clock text-4xl text-pink-400 mb-3 group-hover:-translate-y-2 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"></i>
+                    <h3 class="text-4xl font-extrabold text-white mb-1 tracking-tight">1453</h3>
+                    <p class="text-sm font-bold text-gray-200">Jam Produksi</p>
+                    <p class="text-xs text-gray-400 mt-2">Dedikasi penuh pada kualitas detail visual</p>
+                </div>
+                <div class="bento-item bento-col-3 glass-panel p-6 flex flex-col justify-center text-center group reveal" style="transition-delay: 300ms;">
+                    <i class="fa-solid fa-users text-4xl text-emerald-400 mb-3 group-hover:-translate-y-2 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"></i>
+                    <h3 class="text-4xl font-extrabold text-white mb-1 tracking-tight">15</h3>
+                    <p class="text-sm font-bold text-gray-200">Rekan Kreatif</p>
+                    <p class="text-xs text-gray-400 mt-2">Kolaborasi tim profesional dalam setiap karya</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             ABOUT SECTION
+             ========================================== -->
+        <section id="about" class="scroll-mt-32 mb-6">
+            <div class="bento-grid">
+                <div class="bento-item bento-col-8 glass-panel p-8 md:p-10 reveal">
+                    <h2 class="text-3xl font-extrabold mb-2 text-white">About</h2>
+                    <h3 class="text-xl font-semibold text-blue-400 mb-6">Visual Editor & Multimedia Expert</h3>
+                    
+                    <p class="text-gray-300 leading-relaxed mb-4 text-lg">
+                        Saya adalah seorang <strong>Multimedia Specialist & Content Creator</strong> berbasis di Gianyar, Bali, dengan pengalaman praktis di industri kreatif selama lebih dari 6 tahun. Sebagai lulusan <strong>S1 Sistem Informasi dari ITB STIKOM Bali (Lulus 2026)</strong>, saya menggabungkan pemahaman teknis akademis dengan keahlian artistik dalam produksi audio-visual.
+                    </p>
+                    <p class="text-gray-400 leading-relaxed mb-8 italic">
+                        Berawal dari dunia penyuntingan pada tahun 2019, saya telah berevolusi menjadi praktisi multimedia yang komprehensif dengan fokus pada estetika dan presisi teknis.
+                    </p>
+                    
+                    <div class="bg-white/5 p-6 rounded-2xl border border-white/5 shadow-inner">
+                        <h4 class="font-bold text-white mb-4">Dedikasi saya mencakup tiga pilar utama:</h4>
+                        <div class="space-y-5 text-sm text-gray-300">
+                            <p class="flex gap-3"><span class="text-purple-400 mt-1"><i class="fa-solid fa-check-circle"></i></span> <span><strong class="text-white">Video Post-Production:</strong> Ahli dalam menyusun narasi visual untuk video klip musik (termasuk kolaborasi berkelanjutan dengan El Fawwaz), dokumentasi pernikahan, video sinematik, hingga profil korporat dan institusi pendidikan.</span></p>
+                            <p class="flex gap-3"><span class="text-blue-400 mt-1"><i class="fa-solid fa-check-circle"></i></span> <span><strong class="text-white">Visual Communication & Design:</strong> Berpengalaman sejak 2019 dalam menciptakan identitas visual yang kuat, mulai dari branding logo, desain event, hingga strategi visual untuk platform digital seperti YouTube dan Media Sosial.</span></p>
+                            <p class="flex gap-3"><span class="text-emerald-400 mt-1"><i class="fa-solid fa-check-circle"></i></span> <span><strong class="text-white">Audio Engineering:</strong> Sejak 2021, saya telah mendalami proses mixing dan mastering musik, memastikan setiap karya video memiliki kualitas audio yang profesional, jernih, dan imersif.</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Box -->
+                <div class="bento-item bento-col-4 flex flex-col gap-4 reveal" style="transition-delay: 150ms;">
+                    <div class="glass-panel p-6 md:p-8 flex-1 flex flex-col justify-center gap-6">
+                        <div class="flex items-center gap-5 group">
+                            <div class="w-12 h-12 rounded-[14px] bg-white/10 flex items-center justify-center text-blue-400 shadow-md group-hover:scale-110 transition-transform"><i class="fa-solid fa-location-dot text-lg"></i></div>
+                            <div><h4 class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Domisili</h4><p class="text-base font-bold text-white mt-1">Gianyar, Bali</p></div>
+                        </div>
+                        <div class="flex items-center gap-5 group">
+                            <div class="w-12 h-12 rounded-[14px] bg-white/10 flex items-center justify-center text-purple-400 shadow-md group-hover:scale-110 transition-transform"><i class="fa-solid fa-graduation-cap text-lg"></i></div>
+                            <div><h4 class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Pendidikan</h4><p class="text-base font-bold text-white mt-1">S1 Sistem Info (2026)</p></div>
+                        </div>
+                        <div class="flex items-center gap-5 group">
+                            <div class="w-12 h-12 rounded-[14px] bg-white/10 flex items-center justify-center text-emerald-400 shadow-md group-hover:scale-110 transition-transform"><i class="fa-solid fa-briefcase text-lg"></i></div>
+                            <div><h4 class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Pengalaman</h4><p class="text-base font-bold text-white mt-1">6+ Tahun</p></div>
+                        </div>
+                        <div class="flex items-center gap-5 group">
+                            <div class="w-12 h-12 rounded-[14px] bg-white/10 flex items-center justify-center text-pink-400 shadow-md group-hover:scale-110 transition-transform"><i class="fa-solid fa-star text-lg"></i></div>
+                            <div><h4 class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Spesialisasi</h4><p class="text-base font-bold text-white mt-1">Video, Design, Audio</p></div>
+                        </div>
+                        <div class="flex items-center gap-5 group">
+                            <div class="w-12 h-12 rounded-[14px] bg-white/10 flex items-center justify-center text-yellow-400 shadow-md group-hover:scale-110 transition-transform"><i class="fa-solid fa-laptop-code text-lg"></i></div>
+                            <div><h4 class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Software</h4><p class="text-base font-bold text-white mt-1">Adobe Creative Cloud</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SKILLS SECTION
+             ========================================== -->
+        <section id="skills" class="mb-6 scroll-mt-32">
+            <div class="bento-grid">
+                <div class="bento-item bento-col-12 glass-panel p-8 md:p-10 reveal">
+                    <div class="mb-8 text-center">
+                        <h2 class="text-3xl font-extrabold mb-3 text-white">Keahlian Teknis</h2>
+                        <p class="text-gray-400 text-base max-w-2xl mx-auto">Kombinasi antara intuisi artistik dan penguasaan perangkat lunak mutakhir untuk menghasilkan karya multimedia yang berdampak tinggi.</p>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                        
+                        <div class="flex items-center gap-4 bg-white/5 p-4 rounded-3xl border border-white/5 hover:bg-white/10 transition-colors shadow-lg ios-tap">
+                            <div class="skill-ring shadow-inner" style="--p: 95%; --accent: #b282ff;"><span>95%</span></div>
+                            <div><h4 class="font-bold text-white text-base">Premiere Pro</h4><p class="text-xs text-gray-400">Video Editing</p></div>
+                        </div>
+                        <div class="flex items-center gap-4 bg-white/5 p-4 rounded-3xl border border-white/5 hover:bg-white/10 transition-colors shadow-lg ios-tap">
+                            <div class="skill-ring shadow-inner" style="--p: 90%; --accent: #ff6b6b;"><span>90%</span></div>
+                            <div><h4 class="font-bold text-white text-base">DaVinci Resolve</h4><p class="text-xs text-gray-400">Color Grading</p></div>
+                        </div>
+                        <div class="flex items-center gap-4 bg-white/5 p-4 rounded-3xl border border-white/5 hover:bg-white/10 transition-colors shadow-lg ios-tap">
+                            <div class="skill-ring shadow-inner" style="--p: 95%; --accent: #fff;"><span>95%</span></div>
+                            <div><h4 class="font-bold text-white text-base">CapCut (Pro)</h4><p class="text-xs text-gray-400">Mobile/Sosmed</p></div>
+                        </div>
+                        <div class="flex items-center gap-4 bg-white/5 p-4 rounded-3xl border border-white/5 hover:bg-white/10 transition-colors shadow-lg ios-tap">
+                            <div class="skill-ring shadow-inner" style="--p: 85%; --accent: #4ecdc4;"><span>85%</span></div>
+                            <div><h4 class="font-bold text-white text-base">FL Studio/One</h4><p class="text-xs text-gray-400">Audio DAW</p></div>
+                        </div>
+                        <div class="flex items-center gap-4 bg-white/5 p-4 rounded-3xl border border-white/5 hover:bg-white/10 transition-colors shadow-lg ios-tap">
+                            <div class="skill-ring shadow-inner" style="--p: 90%; --accent: #31a2ff;"><span>90%</span></div>
+                            <div><h4 class="font-bold text-white text-base">Ps & Lr</h4><p class="text-xs text-gray-400">Photo Editing</p></div>
+                        </div>
+                        <div class="flex items-center gap-4 bg-white/5 p-4 rounded-3xl border border-white/5 hover:bg-white/10 transition-colors shadow-lg ios-tap">
+                            <div class="skill-ring shadow-inner" style="--p: 70%; --accent: #ff9f43;"><span>70%</span></div>
+                            <div><h4 class="font-bold text-white text-base">Illustrator</h4><p class="text-xs text-gray-400">Vector Design</p></div>
+                        </div>
+                        <div class="flex items-center gap-4 bg-white/5 p-4 rounded-3xl border border-white/5 hover:bg-white/10 transition-colors shadow-lg ios-tap">
+                            <div class="skill-ring shadow-inner" style="--p: 80%; --accent: #00d2d3;"><span>80%</span></div>
+                            <div><h4 class="font-bold text-white text-base">Affinity</h4><p class="text-xs text-gray-400">Graphic Suite</p></div>
+                        </div>
+                        <div class="flex items-center gap-4 bg-white/5 p-4 rounded-3xl border border-white/5 hover:bg-white/10 transition-colors shadow-lg ios-tap">
+                            <div class="skill-ring shadow-inner" style="--p: 95%; --accent: #0abde3;"><span>95%</span></div>
+                            <div><h4 class="font-bold text-white text-base">Canva Pro</h4><p class="text-xs text-gray-400">Quick Layouts</p></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             RESUME SECTION
+             ========================================== -->
+        <section id="resume" class="mb-6 scroll-mt-32">
+            <div class="bento-grid">
+                <div class="bento-item bento-col-12 glass-panel p-8 md:p-12 reveal">
+                    <div class="mb-10 text-center md:text-left">
+                        <h2 class="text-4xl font-extrabold mb-3 text-white">Resume</h2>
+                        <p class="text-gray-400 text-lg">Ringkasan profesional, riwayat pendidikan, dan pengalaman kerja saya di industri multimedia dan kreatif selama lebih dari 6 tahun.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                        <!-- Kolom Kiri -->
+                        <div>
+                            <h3 class="text-2xl font-bold mb-6 text-blue-400 flex items-center gap-3 bg-blue-400/10 w-max px-4 py-2 rounded-xl"><i class="fa-solid fa-file-contract"></i> Ringkasan</h3>
+                            <div class="relative border-l-2 border-white/10 ml-4 pl-8 pb-8 mb-6 hover:border-blue-400/50 transition-colors group">
+                                <div class="absolute w-4 h-4 bg-blue-500 rounded-full -left-[9px] top-1 shadow-[0_0_10px_rgba(59,130,246,0.8)] group-hover:scale-125 transition-transform"></div>
+                                <h4 class="text-xl font-bold text-white">Multimedia Specialist & Content Creator</h4>
+                                <p class="text-base text-gray-300 italic mb-4 mt-2">Spesialis multimedia yang berbasis di Gianyar, Bali. Menggabungkan keahlian teknis Sistem Informasi dengan kreativitas artistik dalam produksi video, desain visual, dan audio engineering sejak 2019.</p>
+                                <ul class="text-sm text-gray-400 space-y-2 list-none bg-white/5 p-4 rounded-xl border border-white/5">
+                                    <li class="flex items-center gap-2"><i class="fa-solid fa-location-arrow text-blue-400"></i> Gianyar, Bali, Indonesia</li>
+                                    <li class="flex items-center gap-2"><i class="fa-solid fa-phone text-blue-400"></i> [Nomor Telepon Anda]</li>
+                                    <li class="flex items-center gap-2"><i class="fa-solid fa-envelope text-blue-400"></i> [Email Anda]</li>
+                                </ul>
+                            </div>
+
+                            <h3 class="text-2xl font-bold mb-6 text-purple-400 flex items-center gap-3 bg-purple-400/10 w-max px-4 py-2 rounded-xl mt-10"><i class="fa-solid fa-graduation-cap"></i> Pendidikan</h3>
+                            <div class="relative border-l-2 border-white/10 ml-4 pl-8 pb-8 mb-6 hover:border-purple-400/50 transition-colors group">
+                                <div class="absolute w-4 h-4 bg-purple-500 rounded-full -left-[9px] top-1 shadow-[0_0_10px_rgba(168,85,247,0.8)] group-hover:scale-125 transition-transform"></div>
+                                <h4 class="text-xl font-bold text-white">S1 Sistem Informasi / Teknologi Informasi</h4>
+                                <div class="bg-purple-500/20 inline-block px-3 py-1 rounded-full text-xs text-purple-200 font-bold my-3 border border-purple-500/30">2022 - 2026</div>
+                                <p class="text-base text-gray-300 font-semibold mb-2">ITB STIKOM Bali</p>
+                                <p class="text-sm text-gray-400 leading-relaxed">Mempelajari integrasi teknologi informasi dalam proses bisnis dan manajemen data, yang mendukung efisiensi teknis dalam produksi karya digital.</p>
+                            </div>
+
+                            <h3 class="text-2xl font-bold mb-6 text-pink-400 flex items-center gap-3 bg-pink-400/10 w-max px-4 py-2 rounded-xl mt-10"><i class="fa-solid fa-users"></i> Pengabdian Media</h3>
+                            <div class="relative border-l-2 border-white/10 ml-4 pl-8 pb-8 hover:border-pink-400/50 transition-colors group">
+                                <div class="absolute w-4 h-4 bg-pink-500 rounded-full -left-[9px] top-1 shadow-[0_0_10px_rgba(236,72,153,0.8)] group-hover:scale-125 transition-transform"></div>
+                                <h4 class="text-xl font-bold text-white">Tim Media Masjid Agung Al-A'la</h4>
+                                <div class="bg-pink-500/20 inline-block px-3 py-1 rounded-full text-xs text-pink-200 font-bold my-3 border border-pink-500/30">2024 - Sekarang</div>
+                                <p class="text-sm text-gray-400 mb-8 leading-relaxed">Bertanggung jawab atas dokumentasi visual, publikasi kegiatan, dan pengelolaan aset digital masjid untuk penyampaian informasi yang lebih modern.</p>
+
+                                <div class="absolute w-4 h-4 bg-pink-500 rounded-full -left-[9px] top-[160px] shadow-[0_0_10px_rgba(236,72,153,0.8)] group-hover:scale-125 transition-transform"></div>
+                                <h4 class="text-xl font-bold text-white mt-4">Tim Media GEMMA</h4>
+                                <div class="bg-pink-500/20 inline-block px-3 py-1 rounded-full text-xs text-pink-200 font-bold my-3 border border-pink-500/30">2021 - Sekarang</div>
+                                <p class="text-sm text-gray-400 leading-relaxed">Mengelola produksi konten kreatif untuk komunitas, memastikan pesan tersampaikan secara visual melalui media sosial dan platform digital.</p>
+                            </div>
+                        </div>
+
+                        <!-- Kolom Kanan -->
+                        <div>
+                            <h3 class="text-2xl font-bold mb-6 text-emerald-400 flex items-center gap-3 bg-emerald-400/10 w-max px-4 py-2 rounded-xl"><i class="fa-solid fa-briefcase"></i> Pengalaman Profesional</h3>
+                            
+                            <div class="relative border-l-2 border-white/10 ml-4 pl-8 pb-10 hover:border-emerald-400/50 transition-colors group">
+                                <div class="absolute w-4 h-4 bg-emerald-500 rounded-full -left-[9px] top-1 shadow-[0_0_10px_rgba(16,185,129,0.8)] group-hover:scale-125 transition-transform"></div>
+                                <h4 class="text-xl font-bold text-white">Video Klip, Mixing & Arranger (El Fawwaz)</h4>
+                                <div class="bg-emerald-500/20 inline-block px-3 py-1 rounded-full text-xs text-emerald-200 font-bold my-3 border border-emerald-500/30">2021 - Sekarang</div>
+                                <p class="text-base text-gray-300 font-medium mb-3">Kolaborasi Produksi Musik & Visual</p>
+                                <ul class="text-sm text-gray-400 space-y-3 list-none">
+                                    <li class="flex gap-3"><i class="fa-solid fa-chevron-right text-emerald-500 mt-1 text-xs"></i> <span>Menyusun aransemen musik dan melakukan proses mixing/mastering audio untuk kualitas output profesional.</span></li>
+                                    <li class="flex gap-3"><i class="fa-solid fa-chevron-right text-emerald-500 mt-1 text-xs"></i> <span>Menyutradarai dan mengedit video klip musik dengan pendekatan sinematik.</span></li>
+                                    <li class="flex gap-3"><i class="fa-solid fa-chevron-right text-emerald-500 mt-1 text-xs"></i> <span>Memastikan sinkronisasi antara narasi visual dan ritme audio berjalan harmonis.</span></li>
+                                </ul>
+                            </div>
+
+                            <div class="relative border-l-2 border-white/10 ml-4 pl-8 pb-10 hover:border-emerald-400/50 transition-colors group">
+                                <div class="absolute w-4 h-4 bg-emerald-500 rounded-full -left-[9px] top-1 shadow-[0_0_10px_rgba(16,185,129,0.8)] group-hover:scale-125 transition-transform"></div>
+                                <h4 class="text-xl font-bold text-white">Freelance Video Editor</h4>
+                                <div class="bg-emerald-500/20 inline-block px-3 py-1 rounded-full text-xs text-emerald-200 font-bold my-3 border border-emerald-500/30">2023 - Sekarang</div>
+                                <p class="text-base text-gray-300 font-medium mb-3">Mandiri / Project-Based</p>
+                                <ul class="text-sm text-gray-400 space-y-3 list-none">
+                                    <li class="flex gap-3"><i class="fa-solid fa-chevron-right text-emerald-500 mt-1 text-xs"></i> <span>Menangani berbagai proyek post-production mulai dari konten media sosial, dokumentasi event, hingga video profil.</span></li>
+                                    <li class="flex gap-3"><i class="fa-solid fa-chevron-right text-emerald-500 mt-1 text-xs"></i> <span>Menggunakan workflow profesional (Premiere Pro & DaVinci Resolve) untuk color grading dan editing yang cepat namun berkualitas.</span></li>
+                                </ul>
+                            </div>
+
+                            <div class="relative border-l-2 border-transparent ml-4 pl-8 pb-2 group">
+                                <div class="absolute w-4 h-4 bg-emerald-500 rounded-full -left-[9px] top-1 shadow-[0_0_10px_rgba(16,185,129,0.8)] group-hover:scale-125 transition-transform"></div>
+                                <h4 class="text-xl font-bold text-white">Koordinator / Tim Media Kepanitiaan</h4>
+                                <div class="bg-emerald-500/20 inline-block px-3 py-1 rounded-full text-xs text-emerald-200 font-bold my-3 border border-emerald-500/30">2022 - Sekarang</div>
+                                <p class="text-base text-gray-300 font-medium mb-3">Berbagai Event & Organisasi</p>
+                                <ul class="text-sm text-gray-400 space-y-3 list-none">
+                                    <li class="flex gap-3"><i class="fa-solid fa-chevron-right text-emerald-500 mt-1 text-xs"></i> <span>Memimpin pengembangan identitas visual event (branding, poster, dan aset promosi).</span></li>
+                                    <li class="flex gap-3"><i class="fa-solid fa-chevron-right text-emerald-500 mt-1 text-xs"></i> <span>Mengelola alur kerja tim media dalam pendokumentasian acara secara real-time untuk kebutuhan update media sosial.</span></li>
+                                    <li class="flex gap-3"><i class="fa-solid fa-chevron-right text-emerald-500 mt-1 text-xs"></i> <span>Menyusun strategi konten kreatif agar event mendapatkan engagement yang maksimal.</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SERVICES SECTION
+             ========================================== -->
+        <section id="services" class="mb-6 scroll-mt-32">
+            <div class="bento-grid">
+                <div class="bento-item bento-col-12 glass-panel p-8 md:p-12 reveal">
+                    <div class="mb-10 text-center">
+                        <h2 class="text-4xl font-extrabold mb-4 text-white">Layanan Kreatif</h2>
+                        <p class="text-gray-400 text-lg max-w-3xl mx-auto">Solusi multimedia komprehensif yang menggabungkan estetika visual, kualitas audio profesional, dan pendekatan teknis yang sistematis.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-white/5 p-8 rounded-[28px] border border-white/5 hover:bg-white/10 transition-all duration-300 shadow-xl group hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-500/10 cursor-pointer ios-tap">
+                            <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-600 text-white rounded-[20px] flex items-center justify-center text-2xl mb-6 shadow-lg shadow-purple-500/30 group-hover:rotate-6 transition-transform"><i class="fa-solid fa-film"></i></div>
+                            <h4 class="text-xl font-bold mb-3 text-white">Video Post-Production</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed">Editing video profesional untuk musik klip, wedding cinematic, hingga profil korporat dengan teknik color grading yang sinematik.</p>
+                        </div>
+                        <div class="bg-white/5 p-8 rounded-[28px] border border-white/5 hover:bg-white/10 transition-all duration-300 shadow-xl group hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/10 cursor-pointer ios-tap">
+                            <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 text-white rounded-[20px] flex items-center justify-center text-2xl mb-6 shadow-lg shadow-blue-500/30 group-hover:rotate-6 transition-transform"><i class="fa-solid fa-palette"></i></div>
+                            <h4 class="text-xl font-bold mb-3 text-white">Visual Design & Branding</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed">Pembuatan identitas visual yang kuat, mulai dari logo, desain media sosial, hingga kebutuhan visual branding untuk event besar.</p>
+                        </div>
+                        <div class="bg-white/5 p-8 rounded-[28px] border border-white/5 hover:bg-white/10 transition-all duration-300 shadow-xl group hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-500/10 cursor-pointer ios-tap">
+                            <div class="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-500 text-white rounded-[20px] flex items-center justify-center text-2xl mb-6 shadow-lg shadow-emerald-500/30 group-hover:rotate-6 transition-transform"><i class="fa-solid fa-sliders"></i></div>
+                            <h4 class="text-xl font-bold mb-3 text-white">Audio Mixing & Arranger</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed">Pengolahan audio profesional meliputi aransemen musik, mixing, dan mastering untuk memastikan hasil audio yang imersif dan jernih.</p>
+                        </div>
+                        <div class="bg-white/5 p-8 rounded-[28px] border border-white/5 hover:bg-white/10 transition-all duration-300 shadow-xl group hover:-translate-y-2 hover:shadow-2xl hover:shadow-pink-500/10 cursor-pointer ios-tap">
+                            <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-rose-500 text-white rounded-[20px] flex items-center justify-center text-2xl mb-6 shadow-lg shadow-pink-500/30 group-hover:rotate-6 transition-transform"><i class="fa-solid fa-mobile-screen"></i></div>
+                            <h4 class="text-xl font-bold mb-3 text-white">Content Creation Strategy</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed">Produksi konten kreatif untuk TikTok, Reels, dan YouTube dengan fokus pada engagement dan narasi visual yang menarik.</p>
+                        </div>
+                        <div class="bg-white/5 p-8 rounded-[28px] border border-white/5 hover:bg-white/10 transition-all duration-300 shadow-xl group hover:-translate-y-2 hover:shadow-2xl hover:shadow-yellow-500/10 cursor-pointer ios-tap">
+                            <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 text-white rounded-[20px] flex items-center justify-center text-2xl mb-6 shadow-lg shadow-yellow-500/30 group-hover:rotate-6 transition-transform"><i class="fa-solid fa-video"></i></div>
+                            <h4 class="text-xl font-bold mb-3 text-white">Event Media Coverage</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed">Dokumentasi lengkap mulai dari liputan video, after movie, hingga live content untuk berbagai skala acara atau kepanitiaan.</p>
+                        </div>
+                        <div class="bg-white/5 p-8 rounded-[28px] border border-white/5 hover:bg-white/10 transition-all duration-300 shadow-xl group hover:-translate-y-2 hover:shadow-2xl hover:shadow-cyan-500/10 cursor-pointer ios-tap">
+                            <div class="w-16 h-16 bg-gradient-to-br from-cyan-400 to-blue-600 text-white rounded-[20px] flex items-center justify-center text-2xl mb-6 shadow-lg shadow-cyan-500/30 group-hover:rotate-6 transition-transform"><i class="fa-solid fa-laptop-code"></i></div>
+                            <h4 class="text-xl font-bold mb-3 text-white">Multimedia & IT Solution</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed">Integrasi teknologi informasi dalam pengelolaan aset multimedia, memberikan solusi teknis yang efisien untuk kebutuhan digital Anda.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             TESTIMONIALS SECTION
+             ========================================== -->
+        <section id="testimonials" class="mb-6">
+            <div class="bento-grid">
+                <div class="bento-item bento-col-12 glass-panel p-8 md:p-12 reveal">
+                    <div class="mb-10 text-center">
+                        <h2 class="text-4xl font-extrabold mb-3 text-white">Testimoni</h2>
+                        <p class="text-gray-400 text-lg">Apa yang mereka katakan mengenai hasil kolaborasi dan kualitas produksi multimedia saya.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="bg-gradient-to-br from-white/5 to-white/0 p-8 rounded-[28px] border border-white/10 relative shadow-xl backdrop-blur-sm group hover:border-white/20 transition-colors cursor-pointer ios-tap">
+                            <i class="fa-solid fa-quote-right text-5xl text-white/5 absolute top-6 right-8 group-hover:text-white/10 transition-colors"></i>
+                            <p class="text-base text-gray-300 italic mb-6 leading-relaxed">"Sangat profesional dalam menangani desain branding event. Visual yang dihasilkan kuat dan sangat membantu dalam meningkatkan engagement di media sosial."</p>
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center font-bold text-white shadow-lg">E</div>
+                                <div><h4 class="font-bold text-white">Ernalia</h4><p class="text-xs text-blue-300">Client Management</p></div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-br from-white/5 to-white/0 p-8 rounded-[28px] border border-white/10 relative shadow-xl backdrop-blur-sm group hover:border-white/20 transition-colors cursor-pointer ios-tap">
+                            <i class="fa-solid fa-quote-right text-5xl text-white/5 absolute top-6 right-8 group-hover:text-white/10 transition-colors"></i>
+                            <p class="text-base text-gray-300 italic mb-6 leading-relaxed">"Dedikasinya dalam tim media sangat tinggi. Dokumentasi kegiatan selalu tersaji dengan kualitas profesional dan selalu tepat waktu sesuai deadline."</p>
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center font-bold text-white shadow-lg">T</div>
+                                <div><h4 class="font-bold text-white">Taufik</h4><p class="text-xs text-emerald-300">Koordinator Media</p></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-white/5 to-white/0 p-8 rounded-[28px] border border-white/10 relative shadow-xl backdrop-blur-sm group hover:border-white/20 transition-colors cursor-pointer ios-tap">
+                            <i class="fa-solid fa-quote-right text-5xl text-white/5 absolute top-6 right-8 group-hover:text-white/10 transition-colors"></i>
+                            <p class="text-base text-gray-300 italic mb-6 leading-relaxed">"Hasil editing videonya sangat luar biasa. Tone warnanya sinematik dan transisinya sangat halus. Benar-benar editor yang mengerti estetika visual!"</p>
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center font-bold text-white shadow-lg">F</div>
+                                <div><h4 class="font-bold text-white">Firda Dwi Maisaroh</h4><p class="text-xs text-pink-300">Klien Produksi Video</p></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-white/5 to-white/0 p-8 rounded-[28px] border border-white/10 relative shadow-xl backdrop-blur-sm group hover:border-white/20 transition-colors cursor-pointer ios-tap">
+                            <i class="fa-solid fa-quote-right text-5xl text-white/5 absolute top-6 right-8 group-hover:text-white/10 transition-colors"></i>
+                            <p class="text-base text-gray-300 italic mb-6 leading-relaxed">"Kualitas mixing dan mastering audionya sangat jernih. Sebagai arranger, dia benar-benar tahu bagaimana menonjolkan karakter setiap instrumen."</p>
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-yellow-500 flex items-center justify-center font-bold text-white shadow-lg">D</div>
+                                <div><h4 class="font-bold text-white">Diego Fatkhurrahman</h4><p class="text-xs text-orange-300">Musisi & Kolaborator</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             PORTFOLIO GATEWAY CARD
+             ========================================== -->
+        <section class="mb-6">
+            <div class="bento-grid reveal">
+                <a href="portfolio.html" class="bento-item bento-col-12 glass-panel p-1.5 relative overflow-hidden group cursor-pointer ios-tap block">
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-600/40 via-purple-600/40 to-pink-600/40 group-hover:opacity-100 opacity-60 transition-opacity duration-700 blur-xl"></div>
+                    <div class="relative flex flex-col md:flex-row items-center justify-between p-10 md:p-14 z-10 bg-black/30 rounded-[24px] backdrop-blur-md border border-white/10">
+                        <div class="mb-6 md:mb-0 text-center md:text-left">
+                            <h2 class="text-4xl md:text-6xl font-extrabold mb-3 text-white drop-shadow-lg tracking-tight">Portofolio Karya</h2>
+                            <p class="text-gray-200 text-xl font-medium">Eksplorasi ragam karya kreatif mulai dari visual hingga audio.</p>
+                        </div>
+                        <div class="glass-button px-8 py-5 rounded-full text-lg font-bold flex items-center gap-3 group-hover:scale-105 group-hover:shadow-[0_0_40px_rgba(255,255,255,0.2)] transition-all text-white border-white/30">
+                            Buka Portofolio <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             CONTACT SECTION
+             ========================================== -->
+        <section id="contact" class="scroll-mt-32">
+            <div class="bento-grid reveal">
+                <div class="bento-item bento-col-12 glass-panel p-8 md:p-14 flex flex-col md:flex-row gap-12">
+                    <div class="md:w-5/12">
+                        <h2 class="text-4xl font-extrabold mb-4 text-white">Kontak.</h2>
+                        <p class="text-gray-400 mb-10 text-lg leading-relaxed">Mari berkolaborasi! Silakan hubungi saya untuk konsultasi proyek multimedia, produksi video, atau kebutuhan audio engineering.</p>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-center gap-5 group cursor-pointer ios-tap">
+                                <div class="w-14 h-14 rounded-[18px] bg-white/5 flex items-center justify-center border border-white/10 shrink-0 group-hover:bg-blue-500/20 group-hover:text-blue-400 group-hover:border-blue-500/30 transition-all shadow-lg text-2xl"><i class="fa-solid fa-location-dot"></i></div>
+                                <div><h4 class="text-sm text-gray-500 font-semibold uppercase tracking-wider mb-1">Alamat</h4><p class="font-bold text-white">Gianyar, Bali, Indonesia</p></div>
+                            </div>
+                            <div class="flex items-center gap-5 group cursor-pointer ios-tap">
+                                <div class="w-14 h-14 rounded-[18px] bg-white/5 flex items-center justify-center border border-white/10 shrink-0 group-hover:bg-emerald-500/20 group-hover:text-emerald-400 group-hover:border-emerald-500/30 transition-all shadow-lg text-2xl"><i class="fa-brands fa-whatsapp"></i></div>
+                                <div><h4 class="text-sm text-gray-500 font-semibold uppercase tracking-wider mb-1">Telepon / WA</h4><p class="font-bold text-white">+62 [Masukkan Nomor Anda]</p></div>
+                            </div>
+                            <div class="flex items-center gap-5 group cursor-pointer ios-tap">
+                                <div class="w-14 h-14 rounded-[18px] bg-white/5 flex items-center justify-center border border-white/10 shrink-0 group-hover:bg-purple-500/20 group-hover:text-purple-400 group-hover:border-purple-500/30 transition-all shadow-lg text-2xl"><i class="fa-regular fa-envelope"></i></div>
+                                <div><h4 class="text-sm text-gray-500 font-semibold uppercase tracking-wider mb-1">Email</h4><p class="font-bold text-white">[emailanda]@example.com</p></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="md:w-7/12 bg-white/5 p-8 rounded-[32px] border border-white/10 shadow-inner">
+                        <form class="space-y-5">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <input type="text" placeholder="Nama Lengkap" class="w-full bg-black/40 border border-white/10 rounded-[20px] px-6 py-4 focus:outline-none text-white font-medium placeholder-gray-500">
+                                <input type="email" placeholder="Alamat Email" class="w-full bg-black/40 border border-white/10 rounded-[20px] px-6 py-4 focus:outline-none text-white font-medium placeholder-gray-500">
+                            </div>
+                            <input type="text" placeholder="Subjek Pesan" class="w-full bg-black/40 border border-white/10 rounded-[20px] px-6 py-4 focus:outline-none text-white font-medium placeholder-gray-500">
+                            <textarea placeholder="Tuliskan pesan Anda di sini..." rows="5" class="w-full bg-black/40 border border-white/10 rounded-[20px] px-6 py-4 focus:outline-none text-white font-medium placeholder-gray-500 resize-none"></textarea>
+                            <button type="button" class="glass-button w-full py-4 text-white font-bold text-lg hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] ios-tap">
+                                <i class="fa-regular fa-paper-plane mr-2"></i> Kirim Pesan Sekarang
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             FOOTER
+             ========================================== -->
+        <footer class="mt-20 text-center pb-10 reveal">
+            <p class="text-gray-400 text-sm mb-2">© Copyright 2026 <strong class="text-white">Multimedia Specialist Portfolio</strong> Semua Hak Dilindungi.</p>
+            <p class="text-gray-500 text-xs">Dibuat dengan dedikasi di <strong>Gianyar, Bali</strong></p>
+        </footer>
+
+    </main>
+
+    <!-- Scripts -->
+    <script>
+        // Logic for Sliding Nav Pill based on Scroll or Click
+        function updateNavPill(targetLink) {
+            const pill = document.getElementById('nav-pill');
+            if (!targetLink || !pill) return;
+
+            const navContainer = targetLink.parentElement;
+            const targetRect = targetLink.getBoundingClientRect();
+            const navRect = navContainer.getBoundingClientRect();
+            const leftPos = targetRect.left - navRect.left;
+
+            // Animate pill
+            pill.style.opacity = '1';
+            pill.style.width = `${targetRect.width}px`;
+            pill.style.transform = `translateX(${leftPos}px)`;
+
+            // Update active text colors
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('text-white');
+                link.classList.add('text-gray-400');
+            });
+            targetLink.classList.add('text-white');
+            targetLink.classList.remove('text-gray-400');
+        }
+
+        // ScrollSpy logic to update nav active state as you scroll
+        const sections = document.querySelectorAll("section[id]");
+        window.addEventListener("scroll", () => {
+            let current = "";
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= (sectionTop - 300)) {
+                    current = section.getAttribute("id");
+                }
+            });
+
+            if (current) {
+                const activeLink = document.querySelector(`.nav-link[data-target="${current}"]`);
+                if(activeLink) {
+                    updateNavPill(activeLink);
+                }
+            }
+        });
+
+        // Initialize pill position on load
+        window.addEventListener('load', () => {
+            const homeLink = document.querySelector('.nav-link[data-target="home"]');
+            if(homeLink) updateNavPill(homeLink);
+        });
+
+        // Re-calculate on resize
+        window.addEventListener('resize', () => {
+            const activeLink = document.querySelector('.nav-link.text-white');
+            if(activeLink) updateNavPill(activeLink);
+        });
+
+        // Click event to immediately update pill before smooth scroll finishes
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function() {
+                if(this.getAttribute('href') !== 'portfolio.html') {
+                    updateNavPill(this);
+                }
+            });
+        });
+
+        // Intersection Observer for Scroll Reveal Animations
+        function observeElements() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { 
+                threshold: 0.1,
+                rootMargin: "0px 0px -50px 0px"
+            });
+
+            document.querySelectorAll('.reveal').forEach(el => {
+                observer.observe(el);
+            });
+        }
+        
+        document.addEventListener("DOMContentLoaded", observeElements);
+
+        // Typing Effect Script
+        const words = ["Graphic Designer", "Video Editor", "Arranger", "Photographer", "VideoGrapher"];
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typedElement = document.getElementById("typed-text");
+
+        function typeEffect() {
+            const currentWord = words[wordIndex];
+            
+            if (isDeleting) {
+                typedElement.textContent = currentWord.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typedElement.textContent = currentWord.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 50 : 100;
+
+            if (!isDeleting && charIndex === currentWord.length) {
+                typeSpeed = 2000; // Pause at end of word
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                wordIndex = (wordIndex + 1) % words.length;
+                typeSpeed = 500; // Pause before typing next word
+            }
+
+            setTimeout(typeEffect, typeSpeed);
+        }
+
+        // Start typing effect on load
+        document.addEventListener("DOMContentLoaded", () => {
+            setTimeout(typeEffect, 1000);
+        });
+    </script>
+</body>
+</html>

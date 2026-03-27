@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Achill Portfolio</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            --bg-color: #0f0f13;
+            --glass-bg: rgba(25, 25, 30, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --ease-ios: cubic-bezier(0.32, 0.72, 0, 1);
+        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: #f5f5f7; }
+        
+        .glass-panel {
+            background: var(--glass-bg); backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border); border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        input, select, textarea {
+            background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
+            color: white; border-radius: 12px; padding: 12px 16px; width: 100%;
+            transition: all 0.3s ease;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none; border-color: #0a84ff; background: rgba(255,255,255,0.05);
+        }
+        .btn-primary {
+            background: #0a84ff; color: white; font-weight: 600;
+            padding: 12px 24px; border-radius: 100px; transition: all 0.3s;
+        }
+        .btn-primary:hover { background: #0071e3; transform: scale(0.98); }
+        .btn-danger {
+            background: rgba(255, 59, 48, 0.2); color: #ff3b30; border: 1px solid rgba(255, 59, 48, 0.5);
+            padding: 6px 12px; border-radius: 8px; transition: all 0.3s;
+        }
+        .btn-danger:hover { background: #ff3b30; color: white; }
+
+        /* Loader */
+        .loader { border: 3px solid rgba(255,255,255,0.1); border-top-color: #0a84ff; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="p-6 md:p-12">
+
+    <div class="max-w-6xl mx-auto">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold mb-2">Dashboard Admin</h1>
+                <p class="text-gray-400">Kelola database portofolio Anda secara real-time.</p>
+            </div>
+            <a href="portfolio.html" class="px-5 py-2.5 bg-white/10 rounded-full hover:bg-white/20 transition-colors text-sm font-medium border border-white/10">
+                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> Lihat Portofolio
+            </a>
+        </div>
+
+        <!-- Auth Status -->
+        <div id="auth-status" class="mb-6 p-4 rounded-xl bg-blue-500/20 text-blue-300 border border-blue-500/30 flex items-center gap-3">
+            <div class="loader"></div> Menghubungkan ke Database...
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Form Tambah Data -->
+            <div class="lg:col-span-1">
+                <div class="glass-panel p-6">
+                    <h2 class="text-xl font-bold mb-6 border-b border-white/10 pb-4">Tambah Karya Baru</h2>
+                    <form id="add-form" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Judul Karya</label>
+                            <input type="text" id="title" required placeholder="Cth: Cinematic Wedding Bali">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Kategori</label>
+                            <select id="category" required>
+                                <option value="Wedding">Wedding</option>
+                                <option value="Musik Klip">Musik Klip</option>
+                                <option value="Reel/Talking Head">Reel/Talking Head</option>
+                                <option value="Promosi & After Movie">Promosi & After Movie</option>
+                                <option value="Edukasi & Vlog">Edukasi & Vlog</option>
+                                <option value="Audio & Mixing">Audio & Mixing</option>
+                                <option value="Desain Grafis">Desain Grafis</option>
+                                <option value="Animasi">Animasi</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Deskripsi Singkat</label>
+                            <input type="text" id="desc" required placeholder="Cth: Video Highlight acara pernikahan">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Link Thumbnail (Gambar)</label>
+                            <input type="url" id="thumb" required placeholder="https://link-gambar.com/foto.jpg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Tipe Media</label>
+                            <select id="type" required>
+                                <option value="video">Video (YouTube Embed)</option>
+                                <option value="image">Gambar (Resolusi Tinggi)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Link Media (URL)</label>
+                            <input type="url" id="mediaUrl" required placeholder="https://www.youtube.com/embed/...">
+                        </div>
+                        <button type="submit" id="submit-btn" class="btn-primary w-full mt-4 flex justify-center items-center gap-2 disabled:opacity-50">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Simpan ke Database
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tabel Data -->
+            <div class="lg:col-span-2">
+                <div class="glass-panel p-6 h-full">
+                    <h2 class="text-xl font-bold mb-6 border-b border-white/10 pb-4">Daftar Portofolio Tersimpan</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="text-gray-400 text-sm border-b border-white/10">
+                                    <th class="pb-3 font-medium">Karya</th>
+                                    <th class="pb-3 font-medium">Kategori</th>
+                                    <th class="pb-3 font-medium">Tipe</th>
+                                    <th class="pb-3 font-medium text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body" class="text-sm">
+                                <!-- Data will be injected here -->
+                                <tr><td colspan="4" class="text-center py-8 text-gray-500">Memuat data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, addDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // ====================================================================
+        // KONFIGURASI FIREBASE UNTUK NETLIFY / LOKAL
+        // ====================================================================
+        // Konfigurasi dari Project Firebase "Portofolio Achill"
+        const myLocalFirebaseConfig = {
+            apiKey: "AIzaSyD_boJTgmLZFh3xwWXXwTJGU_WEx1hSvV0",
+            authDomain: "portofolio-achill.firebaseapp.com",
+            projectId: "portofolio-achill",
+            storageBucket: "portofolio-achill.firebasestorage.app",
+            messagingSenderId: "322164830190",
+            appId: "1:322164830190:web:6a6d84591ac8b564fba8ff"
+        };
+        
+        // Pengecekan otomatis (Jangan diubah)
+        const isRunningInAI = typeof __firebase_config !== 'undefined';
+        const firebaseConfig = isRunningInAI ? JSON.parse(__firebase_config) : myLocalFirebaseConfig;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'portofolio-achill';
+        // ====================================================================
+
+        // Inisialisasi Firebase
+        let app, auth, db;
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+        } catch (err) {
+            console.error("Gagal menginisialisasi Firebase. Pastikan Config terisi jika di lokal.", err);
+            document.getElementById('auth-status').innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Gagal terhubung: Konfigurasi Firebase Kosong.`;
+            document.getElementById('auth-status').className = "mb-6 p-4 rounded-xl bg-red-500/20 text-red-300 border border-red-500/30";
+        }
+
+        // DOM Elements
+        const authStatus = document.getElementById('auth-status');
+        const tableBody = document.getElementById('table-body');
+        const addForm = document.getElementById('add-form');
+        const submitBtn = document.getElementById('submit-btn');
+
+        let currentUser = null;
+
+        // Initialize Authentication
+        async function initAuth() {
+            if(!auth) return;
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Auth Error:", error);
+                authStatus.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Gagal login ke database.`;
+                authStatus.className = "mb-6 p-4 rounded-xl bg-red-500/20 text-red-300 border border-red-500/30";
+            }
+        }
+
+        // Listen for Auth State
+        if(auth) {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    currentUser = user;
+                    authStatus.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> Terhubung aman. Database siap digunakan.`;
+                    authStatus.className = "mb-6 p-4 rounded-xl bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 text-sm";
+                    loadData();
+                }
+            });
+        }
+
+        // Fetch & Render Data Real-time
+        function loadData() {
+            if (!currentUser || !db) return;
+            
+            // Path Database
+            const dataRef = collection(db, 'artifacts', appId, 'public', 'data', 'portfolioItems');
+
+            onSnapshot(dataRef, (snapshot) => {
+                tableBody.innerHTML = '';
+                if (snapshot.empty) {
+                    tableBody.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-gray-500">Database masih kosong. Tambahkan karya pertama Anda.</td></tr>`;
+                    return;
+                }
+
+                const items = [];
+                snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
+                items.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
+
+                items.forEach((data) => {
+                    const icon = data.type === 'video' ? '<i class="fa-solid fa-film text-purple-400"></i>' : '<i class="fa-solid fa-image text-emerald-400"></i>';
+                    
+                    const row = document.createElement('tr');
+                    row.className = "border-b border-white/5 hover:bg-white/5 transition-colors";
+                    row.innerHTML = `
+                        <td class="py-4 flex items-center gap-3">
+                            <img src="${data.thumb}" class="w-10 h-10 rounded-lg object-cover border border-white/10" onerror="this.src='https://via.placeholder.com/150'">
+                            <div>
+                                <p class="font-bold text-white line-clamp-1">${data.title}</p>
+                                <p class="text-xs text-gray-400 line-clamp-1">${data.desc}</p>
+                            </div>
+                        </td>
+                        <td class="py-4"><span class="px-2 py-1 bg-white/10 rounded-md text-xs">${data.category}</span></td>
+                        <td class="py-4">${icon} <span class="capitalize text-xs ml-1">${data.type}</span></td>
+                        <td class="py-4 text-right">
+                            <button class="btn-danger delete-btn" data-id="${data.id}"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const docId = e.currentTarget.getAttribute('data-id');
+                        if(confirm('Hapus karya ini secara permanen?')) {
+                            const btnEl = e.currentTarget;
+                            btnEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
+                            try {
+                                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'portfolioItems', docId));
+                            } catch (err) {
+                                alert("Gagal menghapus data.");
+                                btnEl.innerHTML = `<i class="fa-solid fa-trash"></i>`;
+                            }
+                        }
+                    });
+                });
+            }, (error) => {
+                console.error("Fetch error:", error);
+            });
+        }
+
+        // Add New Data
+        if(addForm) {
+            addForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!currentUser || !db) return;
+
+                submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Menyimpan...`;
+                submitBtn.disabled = true;
+
+                const newItem = {
+                    title: document.getElementById('title').value,
+                    category: document.getElementById('category').value,
+                    desc: document.getElementById('desc').value,
+                    thumb: document.getElementById('thumb').value,
+                    type: document.getElementById('type').value,
+                    mediaUrl: document.getElementById('mediaUrl').value,
+                    createdAt: serverTimestamp()
+                };
+
+                try {
+                    const dataRef = collection(db, 'artifacts', appId, 'public', 'data', 'portfolioItems');
+                    await addDoc(dataRef, newItem);
+                    addForm.reset();
+                } catch (error) {
+                    console.error("Add error:", error);
+                    alert("Terjadi kesalahan saat menyimpan data. Pastikan konfigurasi Firebase Anda benar.");
+                } finally {
+                    submitBtn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Simpan ke Database`;
+                    submitBtn.disabled = false;
+                }
+            });
+        }
+
+        // Start
+        initAuth();
+    </script>
+</body>
+</html>

@@ -305,10 +305,28 @@
 
             lightboxContent.innerHTML = ''; 
 
+            let finalUrl = item.mediaUrl;
+
+            // Auto-Convert Link YouTube Biasa menjadi format Embed
+            if (item.type === 'video' && finalUrl) {
+                if (finalUrl.includes('youtu.be/')) {
+                    const videoId = finalUrl.split('youtu.be/')[1].split('?')[0];
+                    finalUrl = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1';
+                } else if (finalUrl.includes('youtube.com/watch')) {
+                    try {
+                        const urlObj = new URL(finalUrl);
+                        const videoId = urlObj.searchParams.get('v');
+                        finalUrl = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1';
+                    } catch(e) {}
+                } else if (!finalUrl.startsWith('http')) {
+                    finalUrl = 'https://' + finalUrl;
+                }
+            }
+
             if (item.type === 'video') {
                 lightboxContent.innerHTML = `
                     <div class="relative w-full overflow-hidden rounded-[28px] bg-black shadow-2xl border border-white/10" style="padding-top: 56.25%;">
-                        <iframe class="absolute top-0 left-0 w-full h-full" src="${item.mediaUrl}" title="${item.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe class="absolute top-0 left-0 w-full h-full" src="${finalUrl}" title="${item.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                     <div class="mt-4 text-center">
                         <h2 class="text-2xl font-bold text-white">${item.title}</h2>
@@ -318,7 +336,7 @@
             } else {
                 lightboxContent.innerHTML = `
                     <div class="w-full flex justify-center">
-                        <img src="${item.mediaUrl}" alt="${item.title}" class="max-h-[75vh] w-auto object-contain rounded-[28px] shadow-2xl border border-white/10">
+                        <img src="${finalUrl}" alt="${item.title}" class="max-h-[75vh] w-auto object-contain rounded-[28px] shadow-2xl border border-white/10">
                     </div>
                     <div class="mt-4 text-center">
                         <h2 class="text-2xl font-bold text-white">${item.title}</h2>
@@ -383,7 +401,6 @@
             } else {
                 passwordError.classList.remove('hidden');
                 passwordInput.classList.add('border-red-500');
-                // Efek getar sederhana bisa ditambahkan via animasi, tapi red border sudah cukup
                 setTimeout(() => passwordInput.classList.remove('border-red-500'), 2000);
             }
         };

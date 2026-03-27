@@ -58,6 +58,12 @@
         .reveal { opacity: 0; filter: blur(10px); transform: translateY(40px) scale(0.95); transition: opacity 0.8s var(--ease-ios), transform 0.8s var(--ease-ios), filter 0.8s var(--ease-ios); will-change: opacity, transform, filter; }
         .reveal.active { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); }
         
+        /* Animasi Kunci untuk Data Baru (Ini yang sebelumnya kurang!) */
+        @keyframes viewFadeIn {
+            from { opacity: 0; filter: blur(10px); transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; filter: blur(0); transform: scale(1) translateY(0); }
+        }
+
         .portfolio-grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 2rem; }
         @media (min-width: 768px) { .portfolio-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 1024px) { .portfolio-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -272,8 +278,8 @@
             filteredData.forEach((item, index) => {
                 const icon = item.type === 'video' ? 'fa-play' : 'fa-eye';
                 const cardHTML = `
-                    <div class="glass-panel group overflow-hidden cursor-pointer p-2 ios-tap reveal active" style="animation: viewFadeIn 0.5s ease forwards; animation-delay: ${index * 50}ms; opacity:0;">
-                        <div class="relative h-64 rounded-[22px] overflow-hidden" onclick="window.openLightbox('${item.id}')">
+                    <div class="glass-panel group overflow-hidden cursor-pointer p-2 ios-tap reveal active" style="animation: viewFadeIn 0.5s ease forwards; animation-delay: ${index * 50}ms; opacity:0;" onclick="window.openLightbox('${item.id}')">
+                        <div class="relative h-64 rounded-[22px] overflow-hidden">
                             <img src="${item.thumb}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]" onerror="this.src='https://via.placeholder.com/600x400?text=No+Image'">
                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm">
                                 <i class="fa-solid ${icon} text-5xl text-white drop-shadow-2xl scale-50 group-hover:scale-100 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"></i>

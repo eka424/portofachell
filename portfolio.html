@@ -230,19 +230,18 @@
             if (!url) return url;
 
             // 1. Auto Convert Google Drive Links
+            let driveId = null;
             if (url.includes('drive.google.com/file/d/')) {
-                const id = url.split('/file/d/')[1].split('/')[0];
-                if (isVideo) {
-                    return `https://drive.google.com/file/d/${id}/preview`; // Khusus video Drive agar bisa di embed iframe
-                } else {
-                    return `https://drive.google.com/uc?export=view&id=${id}`; // Khusus gambar
-                }
+                driveId = url.split('/file/d/')[1].split('/')[0];
             } else if (url.includes('drive.google.com/open?id=')) {
-                const id = url.split('id=')[1].split('&')[0];
+                driveId = url.split('id=')[1].split('&')[0];
+            }
+
+            if (driveId) {
                 if (isVideo) {
-                    return `https://drive.google.com/file/d/${id}/preview`;
+                    return `https://drive.google.com/file/d/${driveId}/preview`; // Player Video Drive
                 } else {
-                    return `https://drive.google.com/uc?export=view&id=${id}`;
+                    return `https://drive.google.com/uc?export=view&id=${driveId}`; // Gambar Thumbnail Drive
                 }
             }
 
@@ -260,7 +259,7 @@
                 }
             }
 
-            // Pastikan diawali https://
+            // Pastikan diawali https:// (Untuk link direct biasa)
             if (!url.startsWith('http') && !url.startsWith('data:')) {
                 return 'https://' + url;
             }
@@ -321,12 +320,13 @@
             filteredData.forEach((item, index) => {
                 const icon = item.type === 'video' ? 'fa-play' : 'fa-eye';
                 
-                // Mengkonversi link thumbnail agar Drive Link bisa terbaca tag <img src>
+                // Proses link thumbnail agar Drive link bisa dibaca tag <img src>
                 const finalThumb = processMediaUrl(item.thumb, false);
 
                 const cardHTML = `
                     <div class="glass-panel group overflow-hidden cursor-pointer p-2 ios-tap reveal active" style="animation: viewFadeIn 0.5s ease forwards; animation-delay: ${index * 50}ms; opacity:0;" onclick="window.openLightbox('${item.id}')">
                         <div class="relative h-64 rounded-[22px] overflow-hidden bg-black/20">
+                            <!-- Di Sini Perubahannya, kita gunakan finalThumb hasil proses media converter -->
                             <img src="${finalThumb}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]" onerror="this.src='https://via.placeholder.com/600x400?text=Gambar+Rusak'">
                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm">
                                 <i class="fa-solid ${icon} text-5xl text-white drop-shadow-2xl scale-50 group-hover:scale-100 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"></i>
